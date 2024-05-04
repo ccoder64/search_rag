@@ -1,83 +1,21 @@
 <div align="center">
 <h1 align="center">Search RAG</h1>
-Build your own conversational search engine using less than 500 lines of code.
+基于 <a href=https://github.com/leptonai/search_with_lepton>search_with_lepton</a> 修改的自部署版 RAG 应用
 <br/>
 <img width="70%" src="https://github.com/leptonai/search_with_lepton/assets/1506722/845d7057-02cd-404e-bbc7-60f4bae89680">
 </div>
 
 
-## Features
-- Built-in support for LLM
-- Built-in support for search engine
-- Customizable pretty UI interface
-- Shareable, cached search results
+## 使用 docker 快速部署
+1. 准备 bing search v7 的 API ，可自行 [google](https://google.com)，一般步骤为注册 Azure，搜索 bing search v7 开启 API，生成密钥复制过来即可
+2. 准备 openai API,也可以使用 Gemini
+3. 运行 `docker`，执行
+    ```bash
+    docker run -d -e BACKEND=bing -e BING_SEARCH_V7_SUBSCRIPTION_KEY=你的 bing 密钥 -e LLM_MODEL=gpt-3.5-turbo -e RELATED_QUESTIONS=0 -e OPENAI_API_KEY=你的 openai 密钥 -e OPENAI_BASE_URL=https://api.openai.com/v1/ ccoder64/search_rag:latest
+    ```
+4. 访问 http://localhost:8080
 
-## Setup Search Engine API
-There are two default supported search engines: Bing and Google.
- 
-### Bing Search
-To use the Bing Web Search API, please visit [this link](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api) to obtain your Bing subscription key.
-
-### Google Search
-You have three options for Google Search: you can use the [SearchApi Google Search API](https://www.searchapi.io/) from SearchApi, [Serper Google Search API](https://www.serper.dev) from Serper, or opt for the [Programmable Search Engine](https://developers.google.com/custom-search) provided by Google.
-
-## Setup LLM and KV
-
-> [!NOTE]
-> We recommend using the built-in llm and kv functions with Lepton. 
-> Running the following commands to set up them automatically.
-
-```shell
-pip install -U leptonai && lep login
-```
-
-
-## Build
-
-1. Set Bing subscription key
-```shell
-export BING_SEARCH_V7_SUBSCRIPTION_KEY=YOUR_BING_SUBSCRIPTION_KEY
-```
-2. Build web
-```shell
-cd web && npm install && npm run build
-```
-3. Run server
-```shell
-BACKEND=BING python search_with_lepton.py
-```
-
-For Google Search using SearchApi:
-```shell
-export SEARCHAPI_API_KEY=YOUR_SEARCHAPI_API_KEY
-BACKEND=SEARCHAPI python search_with_lepton.py
-```
-
-For Google Search using Serper:
-```shell
-export SERPER_SEARCH_API_KEY=YOUR_SERPER_API_KEY
-BACKEND=SERPER python search_with_lepton.py
-```
-
-For Google Search using Programmable Search Engine:
-```shell
-export GOOGLE_SEARCH_API_KEY=YOUR_GOOGLE_SEARCH_API_KEY
-export GOOGLE_SEARCH_CX=YOUR_GOOGLE_SEARCH_ENGINE_ID
-BACKEND=GOOGLE python search_with_lepton.py
-```
-
-
-
-## Deploy
-
-You can deploy this to Lepton AI with one click:
-
-[![Deploy with Lepton AI](https://github.com/leptonai/search_with_lepton/assets/1506722/bbd40afa-69ee-4acb-8974-d060880a183a)](https://dashboard.lepton.ai/workspace-redirect/explore/detail/search-by-lepton)
-
-You can also deploy your own version via
-
-```shell
-lep photon run -n search-with-lepton-modified -m search_with_lepton.py --env BACKEND=BING --env BING_SEARCH_V7_SUBSCRIPTION_KEY=YOUR_BING_SUBSCRIPTION_KEY
-```
-
-Learn more about `lep photon` [here](https://www.lepton.ai/docs).
+使用 Gemini 步骤：
+- 去 https://ai.google.dev/ 获取 API KEY
+- 可自行搭建 gemini-openai-proxy，也可使用 `https://gemini-pro-openai-proxy.deno.dev/v1/`
+- 覆盖环境变量 OPENAI_API_KEY=你的Gemini 密钥，OPENAI_BASE_URL=搭建好的 proxy 地址
